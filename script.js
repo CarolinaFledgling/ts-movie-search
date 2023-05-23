@@ -36,19 +36,47 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var config = {
     api: {
+        // Please note that placing the API key here is not recommended in a production environment. It's advisable to handle it securely on the server-side.
         apiKey: "0aa798659514d3ea9753b518ecb1b71e",
         apiUrl: "https://api.themoviedb.org/3/",
+    },
+    search: {
+        term: "",
+        type: "",
+        page: 1,
+        totalPages: 1,
     },
 };
 function search() {
     return __awaiter(this, void 0, void 0, function () {
-        var queryString;
+        var queryString, urlParams;
         return __generator(this, function (_a) {
             queryString = window.location.search;
             console.log(queryString);
+            urlParams = new URLSearchParams(queryString);
+            config.search.type = urlParams.get("type");
+            // search-term is atr name from main input
+            config.search.term = urlParams.get("search-name");
+            if (config.search.term !== "" && config.search.type !== null) {
+            }
+            else {
+                showAlert("You need to enter a search term", ".alert");
+            }
             return [2 /*return*/];
         });
     });
+}
+function showAlert(message, className) {
+    var alertEl = document.createElement("div");
+    alertEl.classList.add("alert", className);
+    alertEl.appendChild(document.createTextNode(message));
+    var alertContainer = document.querySelector("#alert");
+    if (alertContainer !== null) {
+        alertContainer.appendChild(alertEl);
+    }
+    setTimeout(function () {
+        alertEl.remove();
+    }, 3000);
 }
 function init() {
     search();

@@ -68,6 +68,15 @@ ul {
   color: #fff;
 }
 
+.alert {
+  text-align: center;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  background-color: #ff8e3c;
+  color: #0d0d0d;
+}
+
 .container {
   max-width: 1200px;
   width: 100%;
