@@ -7,14 +7,15 @@ interface Config {
     term: string | null;
     type: string | null;
     page: number;
-    totalPages: number;
+    totalPages?: number;
+    totalResults?: string;
   };
 }
 
 const config: Config = {
   api: {
     // Please note that placing the API key here is not recommended in a production environment. It's advisable to handle it securely on the server-side.
-    apiKey: "0aa798659514d3ea9753b518ecb1b71e",
+    apiKey: "",
     apiUrl: "https://api.themoviedb.org/3/",
   },
   search: {
@@ -35,11 +36,86 @@ async function search() {
   config.search.term = urlParams.get("search-name");
 
   if (config.search.term !== "" && config.search.type !== null) {
-    const results = await searchAPIData();
+    const { results, total_page, page } = await searchAPIData();
     console.log(results);
+
+    if (results.length === 0) {
+      console.log("no results");
+      return;
+    }
+
+    displaySearchResults(results);
   } else {
-    showAlert("You need to enter a search term", ".alert");
+    showAlert("You need to enter a search term", "alert");
   }
+}
+
+interface SearchResult {
+  id: number;
+  title: string;
+  name: string;
+  poster_path: string | null;
+  release_date: string;
+  first_air_date: string;
+}
+
+function displaySearchResults(results: SearchResult[]) {
+  const searchResults = document.querySelector(
+    "#search-results"
+  ) as HTMLElement;
+  const searchResultsHeading = document.querySelector(
+    "#search-results-heading"
+  ) as HTMLElement;
+  const pagination = document.querySelector("#pagination") as HTMLElement;
+
+  searchResults.innerHTML = "";
+  searchResultsHeading.innerHTML = "";
+  pagination.innerHTML = "";
+
+  results.forEach((result) => {
+    const div = document.createElement("div");
+    div.classList.add("card");
+    div.innerHTML = `
+          <a href="${config.search.type}-details.html?id=${result.id}">
+            ${
+              result.poster_path
+                ? `<img
+              src="https://image.tmdb.org/t/p/w500${result.poster_path}"
+              class="card-img-top"
+              alt="${
+                config.search.type === "movie" ? result.title : result.name
+              }"
+            />`
+                : `<img
+            src="../images/no-image.jpg"
+            class="card-img-top"
+             alt="${
+               config.search.type === "movie" ? result.title : result.name
+             }"
+          />`
+            }
+          </a>
+          <div class="card-body">
+            <h5 class="card-title">${
+              config.search.type === "movie" ? result.title : result.name
+            }</h5>
+            <p class="card-text">
+              <small class="text-muted">Release: ${
+                config.search.type === "movie"
+                  ? result.release_date
+                  : result.first_air_date
+              }</small>
+            </p>
+          </div>
+        `;
+
+    (
+      document.querySelector("#search-results-heading")! as HTMLElement
+    ).innerHTML = `
+        <h2>${results.length} of ${config.search.totalResults} Results for ${config.search.term}</h2>
+    `;
+    document.querySelector("#search-results")?.appendChild(div);
+  });
 }
 
 async function searchAPIData() {
