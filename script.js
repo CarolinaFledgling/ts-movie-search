@@ -49,20 +49,46 @@ var config = {
 };
 function search() {
     return __awaiter(this, void 0, void 0, function () {
-        var queryString, urlParams;
+        var queryString, urlParams, results;
         return __generator(this, function (_a) {
-            queryString = window.location.search;
-            console.log(queryString);
-            urlParams = new URLSearchParams(queryString);
-            config.search.type = urlParams.get("type");
-            // search-term is atr name from main input
-            config.search.term = urlParams.get("search-name");
-            if (config.search.term !== "" && config.search.type !== null) {
+            switch (_a.label) {
+                case 0:
+                    queryString = window.location.search;
+                    console.log(queryString);
+                    urlParams = new URLSearchParams(queryString);
+                    config.search.type = urlParams.get("type");
+                    // search-term is atr name from main input
+                    config.search.term = urlParams.get("search-name");
+                    if (!(config.search.term !== "" && config.search.type !== null)) return [3 /*break*/, 2];
+                    return [4 /*yield*/, searchAPIData()];
+                case 1:
+                    results = _a.sent();
+                    console.log(results);
+                    return [3 /*break*/, 3];
+                case 2:
+                    showAlert("You need to enter a search term", ".alert");
+                    _a.label = 3;
+                case 3: return [2 /*return*/];
             }
-            else {
-                showAlert("You need to enter a search term", ".alert");
+        });
+    });
+}
+function searchAPIData() {
+    return __awaiter(this, void 0, void 0, function () {
+        var API_KEY, API_URL, response, data;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    API_KEY = config.api.apiKey;
+                    API_URL = config.api.apiUrl;
+                    return [4 /*yield*/, fetch("".concat(API_URL, "search/").concat(config.search.type, "?api_key=").concat(API_KEY, "&language=en-US&query=").concat(config.search.term, "&page=").concat(config.search.page))];
+                case 1:
+                    response = _a.sent();
+                    return [4 /*yield*/, response.json()];
+                case 2:
+                    data = _a.sent();
+                    return [2 /*return*/, data];
             }
-            return [2 /*return*/];
         });
     });
 }
