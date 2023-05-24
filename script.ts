@@ -29,22 +29,30 @@ const config: Config = {
 async function search() {
   const queryString = window.location.search;
   console.log(queryString);
+
+  // The parameters are extracted from the URL using the URLSearchParams object.
+  // These parameters are assigned to the corresponding fields in the configuration object config.search, such as the search type (type) and the entered text (term).
+
   const urlParams = new URLSearchParams(queryString);
 
   config.search.type = urlParams.get("type");
   // search-term is atr name from main input
-  config.search.term = urlParams.get("search-name");
+  config.search.term = urlParams.get("search-term");
 
   if (config.search.term !== "" && config.search.type !== null) {
-    const { results, total_page, page } = await searchAPIData();
+    const { results, total_pages, page, total_results } = await searchAPIData();
     console.log(results);
 
     if (results.length === 0) {
       console.log("no results");
       return;
     }
-
     displaySearchResults(results);
+
+    const searchTerm = document.querySelector(
+      "#search-term"
+    ) as HTMLInputElement;
+    searchTerm.value = "";
   } else {
     showAlert("You need to enter a search term", "alert");
   }
@@ -112,8 +120,8 @@ function displaySearchResults(results: SearchResult[]) {
     (
       document.querySelector("#search-results-heading")! as HTMLElement
     ).innerHTML = `
-        <h2>${results.length} of ${config.search.totalResults} Results for ${config.search.term}</h2>
-    `;
+  <h2>${results.length} Results for ${config.search.term}</h2>
+`;
     document.querySelector("#search-results")?.appendChild(div);
   });
 }
@@ -145,7 +153,12 @@ function showAlert(message: string, className: string) {
 }
 
 function init() {
-  search();
+  document
+    .getElementById("search-form")
+    ?.addEventListener("submit", function (event) {
+      event.preventDefault();
+      search();
+    });
 }
 
 document.addEventListener("DOMContentLoaded", init);

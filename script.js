@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var config = {
     api: {
         // Please note that placing the API key here is not recommended in a production environment. It's advisable to handle it securely on the server-side.
-        apiKey: "3fd2be6f0c70a2a598f084ddfb75487c",
+        apiKey: "0aa798659514d3ea9753b518ecb1b71e",
         apiUrl: "https://api.themoviedb.org/3/",
     },
     search: {
@@ -49,7 +49,7 @@ var config = {
 };
 function search() {
     return __awaiter(this, void 0, void 0, function () {
-        var queryString, urlParams, _a, results, total_page, page;
+        var queryString, urlParams, _a, results, total_pages, page, total_results, searchTerm;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -58,17 +58,19 @@ function search() {
                     urlParams = new URLSearchParams(queryString);
                     config.search.type = urlParams.get("type");
                     // search-term is atr name from main input
-                    config.search.term = urlParams.get("search-name");
+                    config.search.term = urlParams.get("search-term");
                     if (!(config.search.term !== "" && config.search.type !== null)) return [3 /*break*/, 2];
                     return [4 /*yield*/, searchAPIData()];
                 case 1:
-                    _a = _b.sent(), results = _a.results, total_page = _a.total_page, page = _a.page;
+                    _a = _b.sent(), results = _a.results, total_pages = _a.total_pages, page = _a.page, total_results = _a.total_results;
                     console.log(results);
                     if (results.length === 0) {
                         console.log("no results");
                         return [2 /*return*/];
                     }
                     displaySearchResults(results);
+                    searchTerm = document.querySelector("#search-term");
+                    searchTerm.value = "";
                     return [3 /*break*/, 3];
                 case 2:
                     showAlert("You need to enter a search term", "alert");
@@ -79,8 +81,14 @@ function search() {
     });
 }
 function displaySearchResults(results) {
+    var searchResults = document.querySelector("#search-results");
+    var searchResultsHeading = document.querySelector("#search-results-heading");
+    var pagination = document.querySelector("#pagination");
+    searchResults.innerHTML = "";
+    searchResultsHeading.innerHTML = "";
+    pagination.innerHTML = "";
     results.forEach(function (result) {
-        var _a, _b;
+        var _a;
         var div = document.createElement("div");
         div.classList.add("card");
         div.innerHTML = "\n          <a href=\"".concat(config.search.type, "-details.html?id=").concat(result.id, "\">\n            ").concat(result.poster_path
@@ -88,8 +96,8 @@ function displaySearchResults(results) {
             : "<img\n            src=\"../images/no-image.jpg\"\n            class=\"card-img-top\"\n             alt=\"".concat(config.search.type === "movie" ? result.title : result.name, "\"\n          />"), "\n          </a>\n          <div class=\"card-body\">\n            <h5 class=\"card-title\">").concat(config.search.type === "movie" ? result.title : result.name, "</h5>\n            <p class=\"card-text\">\n              <small class=\"text-muted\">Release: ").concat(config.search.type === "movie"
             ? result.release_date
             : result.first_air_date, "</small>\n            </p>\n          </div>\n        ");
-        (_a = document.querySelector("#search-results-heading")) === null || _a === void 0 ? void 0 : _a.innerHTML = "\n        <h2>".concat(results.length, " of ").concat(config.search.totalResults, " Results for ").concat(config.search.term, "</h2>\n      ");
-        (_b = document.querySelector("#search-results")) === null || _b === void 0 ? void 0 : _b.appendChild(div);
+        document.querySelector("#search-results-heading").innerHTML = "\n  <h2>".concat(results.length, " Results for ").concat(config.search.term, "</h2>\n");
+        (_a = document.querySelector("#search-results")) === null || _a === void 0 ? void 0 : _a.appendChild(div);
     });
 }
 function searchAPIData() {
@@ -124,6 +132,11 @@ function showAlert(message, className) {
     }, 3000);
 }
 function init() {
-    search();
+    var _a;
+    (_a = document
+        .getElementById("search-form")) === null || _a === void 0 ? void 0 : _a.addEventListener("submit", function (event) {
+        event.preventDefault();
+        search();
+    });
 }
 document.addEventListener("DOMContentLoaded", init);
