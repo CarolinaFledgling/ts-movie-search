@@ -49,16 +49,22 @@ var config = {
 };
 function search() {
     return __awaiter(this, void 0, void 0, function () {
-        var queryString, urlParams, _a, results, total_pages, page, total_results, searchTerm;
+        var queryString, urlParams, searchTermInput, _a, results, total_pages, page, total_results;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
                     queryString = window.location.search;
-                    console.log(queryString);
+                    console.log("queryString", queryString);
                     urlParams = new URLSearchParams(queryString);
                     config.search.type = urlParams.get("type");
                     // search-term is atr name from main input
                     config.search.term = urlParams.get("search-term");
+                    console.log(" config.search.term", urlParams.get("search-term"));
+                    searchTermInput = document.querySelector('#search-term');
+                    if (searchTermInput instanceof HTMLInputElement && config.search.term !== null) {
+                        console.log('Set input value:', searchTermInput, config.search.term);
+                        searchTermInput.value = config.search.term;
+                    }
                     if (!(config.search.term !== "" && config.search.type !== null)) return [3 /*break*/, 2];
                     return [4 /*yield*/, searchAPIData()];
                 case 1:
@@ -69,8 +75,6 @@ function search() {
                         return [2 /*return*/];
                     }
                     displaySearchResults(results);
-                    searchTerm = document.querySelector("#search-term");
-                    searchTerm.value = "";
                     return [3 /*break*/, 3];
                 case 2:
                     showAlert("You need to enter a search term", "alert");
@@ -83,10 +87,10 @@ function search() {
 function displaySearchResults(results) {
     var searchResults = document.querySelector("#search-results");
     var searchResultsHeading = document.querySelector("#search-results-heading");
-    var pagination = document.querySelector("#pagination");
+    // const pagination = document.querySelector("#pagination") as HTMLElement;
     searchResults.innerHTML = "";
     searchResultsHeading.innerHTML = "";
-    pagination.innerHTML = "";
+    // pagination.innerHTML = "";
     results.forEach(function (result) {
         var _a;
         var div = document.createElement("div");
@@ -133,10 +137,11 @@ function showAlert(message, className) {
 }
 function init() {
     var _a;
+    search();
+    console.log("init called");
     (_a = document
         .getElementById("search-form")) === null || _a === void 0 ? void 0 : _a.addEventListener("submit", function (event) {
-        event.preventDefault();
-        search();
+        console.log("submit called without prevent");
     });
 }
 document.addEventListener("DOMContentLoaded", init);

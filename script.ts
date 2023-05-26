@@ -15,7 +15,7 @@ interface Config {
 const config: Config = {
   api: {
     // Please note that placing the API key here is not recommended in a production environment. It's advisable to handle it securely on the server-side.
-    apiKey: "",
+    apiKey: "0aa798659514d3ea9753b518ecb1b71e",
     apiUrl: "https://api.themoviedb.org/3/",
   },
   search: {
@@ -28,17 +28,27 @@ const config: Config = {
 
 async function search() {
   const queryString = window.location.search;
-  console.log(queryString);
+  console.log("queryString", queryString);
 
   // The parameters are extracted from the URL using the URLSearchParams object.
-  // These parameters are assigned to the corresponding fields in the configuration object config.search, such as the search type (type) and the entered text (term).
+  // These parameters are assigned to the corresponding fields in the configuration object config.search, 
+  // such as the search type (type) and the entered text (term).
 
   const urlParams = new URLSearchParams(queryString);
 
   config.search.type = urlParams.get("type");
+
   // search-term is atr name from main input
   config.search.term = urlParams.get("search-term");
-
+  console.log(" config.search.term", urlParams.get("search-term"));
+  
+  const searchTermInput = document.querySelector('#search-term'); 
+   
+  if (searchTermInput instanceof HTMLInputElement && config.search.term !== null) {
+    console.log('Set input value:', searchTermInput, config.search.term)
+    searchTermInput.value = config.search.term;
+  }
+  
   if (config.search.term !== "" && config.search.type !== null) {
     const { results, total_pages, page, total_results } = await searchAPIData();
     console.log(results);
@@ -49,10 +59,7 @@ async function search() {
     }
     displaySearchResults(results);
 
-    const searchTerm = document.querySelector(
-      "#search-term"
-    ) as HTMLInputElement;
-    searchTerm.value = "";
+   
   } else {
     showAlert("You need to enter a search term", "alert");
   }
@@ -74,11 +81,11 @@ function displaySearchResults(results: SearchResult[]) {
   const searchResultsHeading = document.querySelector(
     "#search-results-heading"
   ) as HTMLElement;
-  const pagination = document.querySelector("#pagination") as HTMLElement;
+  // const pagination = document.querySelector("#pagination") as HTMLElement;
 
   searchResults.innerHTML = "";
   searchResultsHeading.innerHTML = "";
-  pagination.innerHTML = "";
+  // pagination.innerHTML = "";
 
   results.forEach((result) => {
     const div = document.createElement("div");
@@ -153,12 +160,8 @@ function showAlert(message: string, className: string) {
 }
 
 function init() {
-  document
-    .getElementById("search-form")
-    ?.addEventListener("submit", function (event) {
-      event.preventDefault();
-      search();
-    });
+  search();
+
 }
 
 document.addEventListener("DOMContentLoaded", init);
