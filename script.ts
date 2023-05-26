@@ -102,7 +102,7 @@ function displaySearchResults(results: SearchResult[]) {
               }"
             />`
                 : `<img
-            src="../images/no-image.jpg"
+            src="../images/panda.png"
             class="card-img-top"
              alt="${
                config.search.type === "movie" ? result.title : result.name

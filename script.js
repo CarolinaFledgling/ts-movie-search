@@ -97,7 +97,7 @@ function displaySearchResults(results) {
         div.classList.add("card");
         div.innerHTML = "\n          <a href=\"".concat(config.search.type, "-details.html?id=").concat(result.id, "\">\n            ").concat(result.poster_path
             ? "<img\n              src=\"https://image.tmdb.org/t/p/w500".concat(result.poster_path, "\"\n              class=\"card-img-top\"\n              alt=\"").concat(config.search.type === "movie" ? result.title : result.name, "\"\n            />")
-            : "<img\n            src=\"../images/no-image.jpg\"\n            class=\"card-img-top\"\n             alt=\"".concat(config.search.type === "movie" ? result.title : result.name, "\"\n          />"), "\n          </a>\n          <div class=\"card-body\">\n            <h5 class=\"card-title\">").concat(config.search.type === "movie" ? result.title : result.name, "</h5>\n            <p class=\"card-text\">\n              <small class=\"text-muted\">Release: ").concat(config.search.type === "movie"
+            : "<img\n            src=\"../images/panda.png\"\n            class=\"card-img-top\"\n             alt=\"".concat(config.search.type === "movie" ? result.title : result.name, "\"\n          />"), "\n          </a>\n          <div class=\"card-body\">\n            <h5 class=\"card-title\">").concat(config.search.type === "movie" ? result.title : result.name, "</h5>\n            <p class=\"card-text\">\n              <small class=\"text-muted\">Release: ").concat(config.search.type === "movie"
             ? result.release_date
             : result.first_air_date, "</small>\n            </p>\n          </div>\n        ");
         document.querySelector("#search-results-heading").innerHTML = "\n  <h2>".concat(results.length, " Results for ").concat(config.search.term, "</h2>\n");
@@ -136,12 +136,6 @@ function showAlert(message, className) {
     }, 3000);
 }
 function init() {
-    var _a;
     search();
-    console.log("init called");
-    (_a = document
-        .getElementById("search-form")) === null || _a === void 0 ? void 0 : _a.addEventListener("submit", function (event) {
-        console.log("submit called without prevent");
-    });
 }
 document.addEventListener("DOMContentLoaded", init);
